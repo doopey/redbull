@@ -1,6 +1,7 @@
 import time
 import os
 from price_fetcher import PriceFetcher
+from price_fetcher import SinaPriceFetcher
 from holdings import Holdings
 
 def read_input():
@@ -21,7 +22,7 @@ def read_cache():
     output_file = '../output.txt'
     if not os.path.isfile(output_file):
         return None
-    cahce = ''
+    cache = ''
     ctime = time.strftime("%Y-%m-%d", time.localtime(int(os.path.getctime(output_file))))
     today = time.strftime("%Y-%m-%d", time.localtime())
     if ctime == today:
@@ -37,7 +38,7 @@ def get_value():
         code = strs[0]
         operation_count = int(strs[1])
         operation_price = float(strs[2])
-        pf = PriceFetcher(code)
+        pf = SinaPriceFetcher(code)
         current_price = pf.fetch_current_price()
         if current_price:
             profit += (current_price - operation_price) * operation_count
@@ -45,6 +46,7 @@ def get_value():
     return holdings
 
 if __name__ == '__main__':
+    print "--------", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     start_value, end_value, min_value, max_value = 0, 0, 99999999, -99999999
     cache = read_cache()
     if cache:
@@ -58,7 +60,7 @@ if __name__ == '__main__':
     try:
         while True:
             now = time.strftime('%H:%M')
-            if now < '09:27':
+            if now < '09:27' or (now > '11:30' and now < '13:00'):
                 print "now:", now
                 time.sleep(60)
                 continue
@@ -75,7 +77,7 @@ if __name__ == '__main__':
             if now > '15:01':
                 end_value = profit
                 print 'exit:', start_value, end_value, min_value, max_value
-                break
+                exit()
             if now < '09:30':
                 start_value = profit
             print start_value, end_value, min_value, max_value
