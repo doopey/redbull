@@ -4,6 +4,25 @@ from price_fetcher import PriceFetcher
 from price_fetcher import SinaPriceFetcher
 from holdings import Holdings
 
+def init_input():
+    init_dict = {}
+    for h in read_input().holdings:
+        strs = h.split(',')
+        code = strs[0]
+        operation_count = int(strs[1])
+        if code not in init_dict:
+            init_dict[code] = operation_count
+        else:
+            init_dict[code] += operation_count
+    with open('../input.txt', 'w') as f:
+        sum = 0
+        for key in init_dict:
+            if init_dict[key] > 0:
+                line = key + ',' + str(init_dict[key]) + ',' + str(SinaPriceFetcher(key).fetch_yesterday_price()) + ',0'
+                f.write(line + '\n')
+                sum += SinaPriceFetcher(key).fetch_yesterday_price() * init_dict[key]
+        print 'sum', sum
+
 def read_input():
     holdings = []
     with open('../input.txt', 'r') as f:
@@ -12,7 +31,7 @@ def read_input():
             if not line or line.startswith('#'):
                 continue
             strs = line.split(',')
-            if len(strs) != 3:
+            if len(strs) != 4:
                 print 'wrong input:', line
                 exit()
             holdings.append(line)
@@ -60,7 +79,10 @@ if __name__ == '__main__':
     try:
         while True:
             now = time.strftime('%H:%M')
-            if now < '09:27' or (now > '11:30' and now < '13:00'):
+            if now == '09:27':
+                init_input()
+                time.sleep(60)
+            if now < '09:28' or (now > '11:30' and now < '13:00'):
                 print "now:", now
                 time.sleep(60)
                 continue
@@ -87,5 +109,4 @@ if __name__ == '__main__':
         with open('../output.txt', 'w') as f:
             record = '%s,%s,%s,%s' %(start_value, end_value, min_value, max_value)
             f.write(record + '\n')
-
 
