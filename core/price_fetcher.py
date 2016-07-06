@@ -102,10 +102,12 @@ class SinaPriceFetcher(PriceFetcher):
 
 
 if __name__ == '__main__':
-    print SinaPriceFetcher('sz300040').fetch_yesterday_price(), SinaPriceFetcher('sz300040').fetch_current_price();
-    print SinaPriceFetcher('sz002070').fetch_yesterday_price(), SinaPriceFetcher('sz002070').fetch_current_price();
-    print SinaPriceFetcher('sz300219').fetch_yesterday_price(), SinaPriceFetcher('sz300219').fetch_current_price();
-    print SinaPriceFetcher('sz300118').fetch_yesterday_price(), SinaPriceFetcher('sz300118').fetch_current_price();
-    print SinaPriceFetcher('sz002519').fetch_yesterday_price(), SinaPriceFetcher('sz002519').fetch_current_price();
-    print SinaPriceFetcher('sz002340').fetch_yesterday_price(), SinaPriceFetcher('sz002340').fetch_current_price();
-    print SinaPriceFetcher('sz002108').fetch_yesterday_price(), SinaPriceFetcher('sz002108').fetch_current_price();
+    sum = 0
+    for k in [('sz300040', 2000), ('sz300219', 1000), ('sz300118', 600), ('sz002519', 800), ('sz002340', 3000), ('sz002722',200), ('sh603600', 200), ('sz300256', 600), ('sz300230', 300)]:
+        status = 0
+        yesterday_price = SinaPriceFetcher(k[0]).fetch_yesterday_price()
+        print "%s,%d,%.2f,%d" %(k[0], k[1], yesterday_price, status)# , SinaPriceFetcher(k[0]).fetch_current_price()
+        sum += k[1] * yesterday_price
+    print "sum", sum
+
+

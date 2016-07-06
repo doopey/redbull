@@ -1,3 +1,4 @@
+# -*- coding:utf8 -*-
 import time
 import os
 from price_fetcher import PriceFetcher
@@ -34,6 +35,8 @@ def read_input():
             if len(strs) != 4:
                 print 'wrong input:', line
                 exit()
+            if strs[3] == '-1': # 停
+                continue
             holdings.append(line)
     return Holdings(holdings = holdings)
 
@@ -57,12 +60,35 @@ def get_value():
         code = strs[0]
         operation_count = int(strs[1])
         operation_price = float(strs[2])
+        status = strs[3]
         pf = SinaPriceFetcher(code)
         current_price = pf.fetch_current_price()
         if current_price:
             profit += (current_price - operation_price) * operation_count
+        if status == '1':
+            opertation_amount = operation_count * operation_price
+            if abs(opertation_amount * 0.0025) < 5:
+                profit += 5
+            else:
+                profit += opertation_amount * 0.0025
+            if opertation_amount < 0:
+                profit -= opertation_amount * 0.001
     setattr(holdings, 'profit', profit)
     return holdings
+
+# to be completed
+def init_input():
+    new_input_list = []
+    with open('../input.txt', 'r') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            strs = line.split(',')
+            code = strs[0]
+            pf = SinaPriceFetcher(code)
+            current_price = pf.fetch_current_price()
+            
 
 if __name__ == '__main__':
     print "--------", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -76,6 +102,7 @@ if __name__ == '__main__':
         else:
             print 'wrong format'
 
+    # init input.txt
     try:
         while True:
             now = time.strftime('%H:%M')
@@ -100,7 +127,7 @@ if __name__ == '__main__':
                 end_value = profit
                 print 'exit:', start_value, end_value, min_value, max_value
                 exit()
-            if now < '09:30':
+            if now < '09:29':
                 start_value = profit
             print start_value, end_value, min_value, max_value
             time.sleep(5)

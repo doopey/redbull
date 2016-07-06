@@ -3,7 +3,7 @@
 class Holdings(object):
 
     def __init__(self, **kwargs):
-        self.holdings = kwargs.get('holdings', []) # 000000,-300,9.00
+        self.holdings = kwargs.get('holdings', []) # 000000,-300,9.00,1
         self.profit = kwargs.get('profit', 0)
         self.stocks = set()
         for k in self.holdings:
