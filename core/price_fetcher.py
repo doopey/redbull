@@ -103,11 +103,13 @@ class SinaPriceFetcher(PriceFetcher):
 
 if __name__ == '__main__':
     sum = 0
-    for k in [('sz300040', 2000), ('sz300219', 1000), ('sz300118', 600), ('sz002519', 800), ('sz002340', 3000), ('sz002722',200), ('sh603600', 200), ('sz300256', 600), ('sz300230', 300)]:
-        status = 0
-        yesterday_price = SinaPriceFetcher(k[0]).fetch_yesterday_price()
-        print "%s,%d,%.2f,%d" %(k[0], k[1], yesterday_price, status)# , SinaPriceFetcher(k[0]).fetch_current_price()
-        sum += k[1] * yesterday_price
+    with open('../input.txt', 'r') as f:
+        for line in f:
+            strs = line.strip().split(',')
+            status = 0
+            yesterday_price = SinaPriceFetcher(strs[0]).fetch_yesterday_price()
+            print "%s,%s,%.2f,%d" %(strs[0], strs[1], yesterday_price, status)# , SinaPriceFetcher(k[0]).fetch_current_price()
+            sum += int(strs[1]) * yesterday_price
     print "sum", sum
 
 

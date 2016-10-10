@@ -15,6 +15,7 @@ def init_input():
             init_dict[code] = operation_count
         else:
             init_dict[code] += operation_count
+    print init_dict
     with open('../input.txt', 'w') as f:
         sum = 0
         for key in init_dict:
@@ -76,20 +77,6 @@ def get_value():
     setattr(holdings, 'profit', profit)
     return holdings
 
-# to be completed
-def init_input():
-    new_input_list = []
-    with open('../input.txt', 'r') as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            strs = line.split(',')
-            code = strs[0]
-            pf = SinaPriceFetcher(code)
-            current_price = pf.fetch_current_price()
-            
-
 if __name__ == '__main__':
     print "--------", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     start_value, end_value, min_value, max_value = 0, 0, 99999999, -99999999
@@ -102,13 +89,21 @@ if __name__ == '__main__':
         else:
             print 'wrong format'
 
+    is_first_init = True
     # init input.txt
     try:
         while True:
             now = time.strftime('%H:%M')
+            if now >= '09:30' and is_first_init:
+                init_input()
+                start_value = getattr(get_value(), 'profit')
+                is_first_init = False
+                continue
             if now == '09:27':
                 init_input()
+                start_value = getattr(get_value(), 'profit')
                 time.sleep(60)
+                continue
             if now < '09:28' or (now > '11:30' and now < '13:00'):
                 print "now:", now
                 time.sleep(60)
@@ -127,8 +122,8 @@ if __name__ == '__main__':
                 end_value = profit
                 print 'exit:', start_value, end_value, min_value, max_value
                 exit()
-            if now < '09:29':
-                start_value = profit
+#            if now < '09:29':
+#                start_value = profit
             print start_value, end_value, min_value, max_value
             time.sleep(5)
 
@@ -136,4 +131,3 @@ if __name__ == '__main__':
         with open('../output.txt', 'w') as f:
             record = '%s,%s,%s,%s' %(start_value, end_value, min_value, max_value)
             f.write(record + '\n')
-
