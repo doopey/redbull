@@ -111,7 +111,7 @@ if __name__ == '__main__':
     
             h = get_value()
             profit = getattr(h, 'profit')
-            print profit
+#            print profit
             if profit:
                 if profit < min_value:
                     min_value = profit
@@ -124,10 +124,14 @@ if __name__ == '__main__':
                 exit()
 #            if now < '09:29':
 #                start_value = profit
-            print start_value, end_value, min_value, max_value
+            print "dare me?", profit, start_value, end_value, min_value, max_value
             time.sleep(5)
 
     except (KeyboardInterrupt, SystemExit):
         with open('../output.txt', 'w') as f:
             record = '%s,%s,%s,%s' %(start_value, end_value, min_value, max_value)
+            f.write(record + '\n')
+        today = time.strftime("%Y%m%d", time.localtime())
+        with open('../log/record.txt', 'a') as f:
+            record = '%s,%s,%s,%s,%s' %(today, start_value, end_value, min_value, max_value)
             f.write(record + '\n')
